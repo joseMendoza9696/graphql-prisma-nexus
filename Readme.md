@@ -21,5 +21,9 @@ El proyecto se basó principalmente en el tutorial de Nexus.js `https://nexusjs.
   DATABASE="postgresql://<username>:<password>@<host>:<port>/<data_base>"
   DATABASE_TESTING="postgresql://<username>:<password>@<host>:<port>/<data_base>?schema="
 
+**Comando especiales**
+- para correr `npx prisma migrate` se debe utilizar el siguiente comando:
+`dotenv -e config/dev.env -- npx prisma migrate dev --preview-feature`
+  para poder utilizar las variables de entorno de nuestro proyecto
 
 
