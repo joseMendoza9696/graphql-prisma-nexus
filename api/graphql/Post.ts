@@ -1,4 +1,5 @@
 import { extendType, objectType, stringArg, nonNull, intArg } from "nexus";
+import { User } from './User'
 
 // aqui creamos nuestro modelo
 export const Post = objectType({
@@ -8,6 +9,13 @@ export const Post = objectType({
         t.string('title')
         t.string('body')
         t.boolean('published')
+        t.field('user_id', {
+            type: User,
+            resolve(root, _args, ctx) {
+                // @ts-ignore
+                return ctx.db.user.findUnique({ where: { id: root.user_id } })
+            }
+        })
     },
 })
 
@@ -18,7 +26,7 @@ export const PostQuery = extendType({
     type: 'Query',
     definition(t) {
         // le decimos que no puede ser una lista nula
-        t.nonNull.list.field('drafts', {
+        t.list.field('drafts', {
             type: 'Post',
             resolve(_root, _args, ctx) {
                 // retornamos los posts que sean published:false
@@ -44,14 +52,16 @@ export const PostMutation = extendType({
             args: {
                 // especificaciones de los argumentos
                 title: nonNull(stringArg()),
-                body: nonNull(stringArg())
+                body: nonNull(stringArg()),
+                user: nonNull(intArg())
             },
             resolve(_root, args,ctx ){
                 // creamos el objeto para meter a la DB
                 const draft = {
                     title: args.title,
                     body: args.body,
-                    published: false
+                    published: false,
+                    user_id: args.user
                 }
 
                 // guardamos en la db (entrara prisma)

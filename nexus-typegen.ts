@@ -36,6 +36,12 @@ export interface NexusGenObjects {
     title?: string | null; // String
   }
   Query: {};
+  User: { // root type
+    email?: string | null; // String
+    id?: number | null; // Int
+    name?: string | null; // String
+    password?: string | null; // String
+  }
 }
 
 export interface NexusGenInterfaces {
@@ -51,6 +57,7 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
     createDraft: NexusGenRootTypes['Post']; // Post!
+    createUser: NexusGenRootTypes['User']; // User!
     publish: NexusGenRootTypes['Post'] | null; // Post
   }
   Post: { // field return type
@@ -58,9 +65,18 @@ export interface NexusGenFieldTypes {
     id: number | null; // Int
     published: boolean | null; // Boolean
     title: string | null; // String
+    user_id: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
-    drafts: Array<NexusGenRootTypes['Post'] | null>; // [Post]!
+    drafts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
+    posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
+    users: Array<NexusGenRootTypes['User'] | null> | null; // [User]
+  }
+  User: { // field return type
+    email: string | null; // String
+    id: number | null; // Int
+    name: string | null; // String
+    password: string | null; // String
     posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
   }
 }
@@ -68,6 +84,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     createDraft: 'Post'
+    createUser: 'User'
     publish: 'Post'
   }
   Post: { // field return type name
@@ -75,9 +92,18 @@ export interface NexusGenFieldTypeNames {
     id: 'Int'
     published: 'Boolean'
     title: 'String'
+    user_id: 'User'
   }
   Query: { // field return type name
     drafts: 'Post'
+    posts: 'Post'
+    users: 'User'
+  }
+  User: { // field return type name
+    email: 'String'
+    id: 'Int'
+    name: 'String'
+    password: 'String'
     posts: 'Post'
   }
 }
@@ -87,6 +113,12 @@ export interface NexusGenArgTypes {
     createDraft: { // args
       body: string; // String!
       title: string; // String!
+      user: number; // Int!
+    }
+    createUser: { // args
+      email: string; // String!
+      name: string; // String!
+      password: string; // String!
     }
     publish: { // args
       draftId: number; // Int!
