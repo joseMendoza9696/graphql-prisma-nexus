@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken')
 
-export const getUserId = (request: any, requireAuth = true) => {
-    const header = request.request ? request.request.headers.authorization : request.connection.context.Authorization
+// aqui pasamos el request
+// requireAuth es si queremos que necesariamente este autenticado
+export const GetUserId = (request: any, requireAuth = true) => {
+    const header = request.req ? request.req.headers.authorization : request.connection.context.Authorization
 
     if (header) {
         const token = header.replace('Bearer ', '')

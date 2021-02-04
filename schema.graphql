@@ -8,7 +8,7 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 scalar DateTime
 
 type Mutation {
-  createDraft(body: String!, title: String!, user: Int!): Post!
+  createDraft(body: String!, title: String!): Post!
   createUser(email: String!, name: String!, password: String!): User!
   login(email: String!, password: String!): User!
   publish(draftId: Int!): Post
@@ -17,7 +17,7 @@ type Mutation {
 type Post {
   body: String
   createdAt: DateTime!
-  id: Int
+  id: Int!
   published: Boolean
   title: String
   updatedAt: DateTime!
@@ -32,9 +32,9 @@ type Query {
 
 type User {
   createdAt: DateTime!
-  email: String
-  id: Int
-  name: String
+  email: String!
+  id: Int!
+  name: String!
   password: String
   posts: [Post]
   token: String

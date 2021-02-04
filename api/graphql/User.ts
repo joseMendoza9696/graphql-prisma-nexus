@@ -6,9 +6,9 @@ import { GenerateToken } from "../utils/GenerateToken"
 export const User = objectType({
     name: 'User',
     definition(t) {
-        t.int('id')
-        t.string('name')
-        t.string('email')
+        t.nonNull.int('id')
+        t.nonNull.string('name')
+        t.nonNull.string('email')
         t.string('password')
         t.nonNull.field('createdAt', {
             type: 'DateTime'
@@ -18,8 +18,8 @@ export const User = objectType({
         })
         t.list.field('posts', {
             type: Post,
-            resolve(root, _args, ctx) {
-                return ctx.db.post.findMany({ where: { user_id: root.id } })
+            async resolve(root, _args, ctx) {
+                return await ctx.context.db.post.findMany({ where: { user_id: root.id } })
             },
         })
         t.string('token')
@@ -32,7 +32,7 @@ export const UserQuery = extendType({
         t.list.field('users', {
             type: 'User',
             async resolve(_root, _args, ctx) {
-                return await ctx.db.user.findMany({})
+                return await ctx.context.db.user.findMany({})
             }
         })
     }
@@ -55,8 +55,13 @@ export const UserMutation = extendType({
                     // hasheamos el password
                     password: await HashPassword(args.password)
                 }
+                let createdUser = await ctx.context.db.user.create({data: newUser})
+                createdUser = {
+                    ...createdUser,
+                    token: await GenerateToken(createdUser.id)
+                }
 
-                return await ctx.db.user.create({data: newUser})
+                return createdUser
             }
         });
 
@@ -67,7 +72,7 @@ export const UserMutation = extendType({
                 password: nonNull(stringArg())
             },
             async resolve(_root, args,ctx){
-                let user = await ctx.db.user.findUnique({
+                let user = await ctx.context.db.user.findUnique({
                     where: {
                         email: args.email,
                     }

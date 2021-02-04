@@ -48,7 +48,7 @@ export interface NexusGenObjects {
   Post: { // root type
     body?: string | null; // String
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id?: number | null; // Int
+    id: number; // Int!
     published?: boolean | null; // Boolean
     title?: string | null; // String
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
@@ -56,9 +56,9 @@ export interface NexusGenObjects {
   Query: {};
   User: { // root type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    email?: string | null; // String
-    id?: number | null; // Int
-    name?: string | null; // String
+    email: string; // String!
+    id: number; // Int!
+    name: string; // String!
     password?: string | null; // String
     token?: string | null; // String
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
@@ -85,7 +85,7 @@ export interface NexusGenFieldTypes {
   Post: { // field return type
     body: string | null; // String
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    id: number | null; // Int
+    id: number; // Int!
     published: boolean | null; // Boolean
     title: string | null; // String
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
@@ -98,9 +98,9 @@ export interface NexusGenFieldTypes {
   }
   User: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
-    email: string | null; // String
-    id: number | null; // Int
-    name: string | null; // String
+    email: string; // String!
+    id: number; // Int!
+    name: string; // String!
     password: string | null; // String
     posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
     token: string | null; // String
@@ -146,7 +146,6 @@ export interface NexusGenArgTypes {
     createDraft: { // args
       body: string; // String!
       title: string; // String!
-      user: number; // Int!
     }
     createUser: { // args
       email: string; // String!

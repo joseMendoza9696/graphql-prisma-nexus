@@ -1,11 +1,12 @@
 import { extendType, objectType, stringArg, nonNull, intArg } from "nexus";
 import { User } from './User'
+import {GetUserId} from "../utils/getUserId";
 
 // aqui creamos nuestro modelo
 export const Post = objectType({
     name: 'Post',
     definition(t) {
-        t.int('id')
+        t.nonNull.int('id')
         t.string('title')
         t.string('body')
         t.boolean('published')
@@ -19,12 +20,11 @@ export const Post = objectType({
             type: User,
             resolve(root, _args, ctx) {
                 // @ts-ignore
-                return ctx.db.user.findUnique({ where: { id: root.user_id } })
+                return ctx.context.db.user.findUnique({ where: { id: root.user_id } })
             }
         })
     },
 })
-
 
 // creamos nuestro resolver
 export const PostQuery = extendType({
@@ -34,16 +34,16 @@ export const PostQuery = extendType({
         // le decimos que no puede ser una lista nula
         t.list.field('drafts', {
             type: 'Post',
-            resolve(_root, _args, ctx) {
+            async resolve(_root, _args, ctx) {
                 // retornamos los posts que sean published:false
-                return ctx.db.post.findMany({ where: { published: false } })
+                return await ctx.context.db.post.findMany({ where: { published: false } })
             },
         })
 
         t.list.field('posts', {
             type: 'Post',
-            resolve(_root, _args, ctx) {
-                return ctx.db.post.findMany({ where: { published: true } })
+            async resolve(_root, _args, ctx) {
+                return await ctx.context.db.post.findMany({ where: { published: true } })
             },
         })
     },
@@ -59,19 +59,22 @@ export const PostMutation = extendType({
                 // especificaciones de los argumentos
                 title: nonNull(stringArg()),
                 body: nonNull(stringArg()),
-                user: nonNull(intArg())
             },
-            resolve(_root, args,ctx ){
+            async resolve(_root, args,ctx ){
+                // verificamos la autenticacion
+                // sacamos el id de la cabecera
+                const userId = await GetUserId(ctx.request)
+
                 // creamos el objeto para meter a la DB
                 const draft = {
                     title: args.title,
                     body: args.body,
                     published: false,
-                    user_id: args.user
+                    user_id: userId
                 }
 
                 // guardamos en la db (entrara prisma)
-                return ctx.db.post.create({ data: draft })
+                return await ctx.context.db.post.create({ data: draft })
             }
         })
 
@@ -80,9 +83,12 @@ export const PostMutation = extendType({
             args: {
                 draftId: nonNull(intArg()),
             },
-            resolve(_root, args, ctx){
-                return ctx.db.post.update({
-                    where: { id: args.draftId },
+            async resolve(_root, args, ctx){
+
+                return await ctx.context.db.post.update({
+                    where: {
+                        id: args.draftId
+                    },
                     data: {
                         published: true
                     }
