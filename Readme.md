@@ -24,6 +24,8 @@ El proyecto se basó principalmente en el tutorial de Nexus.js `https://nexusjs.
 **Comando especiales**
 - para correr `npx prisma migrate` se debe utilizar el siguiente comando:
 `dotenv -e config/dev.env -- npx prisma migrate dev --preview-feature`
-  para poder utilizar las variables de entorno de nuestro proyecto
+  para poder utilizar las variables de entorno de nuestro proyecto.
+  
+- para Actualizar los snapshots de los tests: `npm run test -- -u`.
 
 

@@ -5,8 +5,23 @@
 
 
 import { ContextModule } from "./api/context"
-
-
+import { core } from "nexus"
+declare global {
+  interface NexusGenCustomInputMethods<TypeName extends string> {
+    /**
+     * A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+     */
+    date<FieldName extends string>(fieldName: FieldName, opts?: core.CommonInputFieldConfig<TypeName, FieldName>): void // "DateTime";
+  }
+}
+declare global {
+  interface NexusGenCustomOutputMethods<TypeName extends string> {
+    /**
+     * A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.
+     */
+    date<FieldName extends string>(fieldName: FieldName, ...opts: core.ScalarOutSpread<TypeName, FieldName>): void // "DateTime";
+  }
+}
 
 
 declare global {
@@ -25,22 +40,28 @@ export interface NexusGenScalars {
   Float: number
   Boolean: boolean
   ID: string
+  DateTime: any
 }
 
 export interface NexusGenObjects {
   Mutation: {};
   Post: { // root type
     body?: string | null; // String
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id?: number | null; // Int
     published?: boolean | null; // Boolean
     title?: string | null; // String
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
   Query: {};
   User: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     email?: string | null; // String
     id?: number | null; // Int
     name?: string | null; // String
     password?: string | null; // String
+    token?: string | null; // String
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
 }
 
@@ -58,13 +79,16 @@ export interface NexusGenFieldTypes {
   Mutation: { // field return type
     createDraft: NexusGenRootTypes['Post']; // Post!
     createUser: NexusGenRootTypes['User']; // User!
+    login: NexusGenRootTypes['User']; // User!
     publish: NexusGenRootTypes['Post'] | null; // Post
   }
   Post: { // field return type
     body: string | null; // String
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: number | null; // Int
     published: boolean | null; // Boolean
     title: string | null; // String
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
     user_id: NexusGenRootTypes['User'] | null; // User
   }
   Query: { // field return type
@@ -73,11 +97,14 @@ export interface NexusGenFieldTypes {
     users: Array<NexusGenRootTypes['User'] | null> | null; // [User]
   }
   User: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
     email: string | null; // String
     id: number | null; // Int
     name: string | null; // String
     password: string | null; // String
     posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
+    token: string | null; // String
+    updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
 }
 
@@ -85,13 +112,16 @@ export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     createDraft: 'Post'
     createUser: 'User'
+    login: 'User'
     publish: 'Post'
   }
   Post: { // field return type name
     body: 'String'
+    createdAt: 'DateTime'
     id: 'Int'
     published: 'Boolean'
     title: 'String'
+    updatedAt: 'DateTime'
     user_id: 'User'
   }
   Query: { // field return type name
@@ -100,11 +130,14 @@ export interface NexusGenFieldTypeNames {
     users: 'User'
   }
   User: { // field return type name
+    createdAt: 'DateTime'
     email: 'String'
     id: 'Int'
     name: 'String'
     password: 'String'
     posts: 'Post'
+    token: 'String'
+    updatedAt: 'DateTime'
   }
 }
 
@@ -118,6 +151,10 @@ export interface NexusGenArgTypes {
     createUser: { // args
       email: string; // String!
       name: string; // String!
+      password: string; // String!
+    }
+    login: { // args
+      email: string; // String!
       password: string; // String!
     }
     publish: { // args

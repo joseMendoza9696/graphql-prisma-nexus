@@ -9,6 +9,12 @@ export const Post = objectType({
         t.string('title')
         t.string('body')
         t.boolean('published')
+        t.nonNull.field('createdAt', {
+            type: 'DateTime'
+        })
+        t.nonNull.field('updatedAt', {
+            type: 'DateTime'
+        })
         t.field('user_id', {
             type: User,
             resolve(root, _args, ctx) {
